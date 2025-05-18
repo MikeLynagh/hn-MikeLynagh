@@ -7,10 +7,16 @@ interface TabsProps {
 }
 
 export const Tabs = ({ activeTab, onChange }: TabsProps) => (
-  <div className="flex gap-4 ">
+  <div 
+  role="tablist"
+  aria-label="Post type"
+  className="flex gap-4 ">
     {(POST_TYPES).map((tab) => (
       <button
         key={tab}
+        role="tab"
+        aria-selected={activeTab === tab}
+        aria-controls={`tabpanel-${tab}`}
         onClick={() => onChange(tab)}
         className={` ${activeTab === tab ? 'text-orange-400 font-bold' : 'text-gray-300'}`}
       >
