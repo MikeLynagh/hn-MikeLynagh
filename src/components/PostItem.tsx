@@ -2,14 +2,19 @@ import type { Post } from "../types/post";
 
 export const PostItem = ({ post }: { post: Post }) => {
     return (
-        <div className="border p-4 rounded">
-            <h2>{post.title}</h2>
-            <p>By: {post.by}</p>
-            {post.url && (
-                <a href={post.url} target="_blank" rel="noopener noreferrer">
-                    Read More
-                </a>
-            )}
+        <div className="group mb-6">
+            <a href={post.url} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold leading-3 text-gray-100
+            group-hover:text-yellow-600 focus:text-yellow-600">
+                {post.title}
+            </a>
+            <div className="text-sm font-normal text-gray-400">
+                <span>{post.points} points</span>
+                <span className="text-gray-700">•</span>
+                <span>{post.comments} comments</span>
+                <span className="text-gray-700">•</span>
+                <span>{post.time} ago</span>
+            </div>
+            
         </div>
     );
 };

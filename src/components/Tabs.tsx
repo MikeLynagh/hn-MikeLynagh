@@ -11,7 +11,7 @@ export const Tabs = ({ activeTab, onChange }: TabsProps) => (
       <button
         key={tab}
         onClick={() => onChange(tab)}
-        className={` ${activeTab === tab ? 'text-orange-600 font-bold' : 'text-gray-500'}`}
+        className={` ${activeTab === tab ? 'text-orange-400 font-bold' : 'text-gray-500'}`}
       >
         {tab.charAt(0).toUpperCase() + tab.slice(1)}
       </button>
