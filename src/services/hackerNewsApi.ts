@@ -1,7 +1,10 @@
 import type { Post } from "../types/post";
 
-export const fetchPosts = async (type: "top" | "new"): Promise<Post[]> => {
-    console.log("fetching posts");
+const POSTS_PER_PAGE = 30;
+export const fetchPosts = async (
+    type: "top" | "new",
+    page: number = 1,
+): Promise<Post[]> => {
 
     try {
         const response = await fetch(`https://hacker-news.firebaseio.com/v0/${type}stories.json`);
@@ -12,24 +15,28 @@ export const fetchPosts = async (type: "top" | "new"): Promise<Post[]> => {
         }
 
         const postIds = await response.json();
-        console.log("fetch post ids:", postIds);
+        const startIndex = (page - 1) * POSTS_PER_PAGE;
+        const endIndex = startIndex + POSTS_PER_PAGE;
+        const paginatedIds = postIds.slice(startIndex, endIndex);
 
-        // fetch details for each post 
         const posts = await Promise.all(
-            postIds.slice(0, 10).map(async (id: number) => {
+            paginatedIds.map(async (id: number) => {
                 try {
                     const postResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-
                     if(!postResponse.ok) {
                         throw new Error(`HTTP error! status: ${postResponse.status}`);
                     }
                     const postData = await postResponse.json();
 
                     return {
+                        id: postData.id,
                         by: postData.by,
                         title: postData.title, 
                         type: postData.type,
                         url: postData.url,
+                        points: postData.score,
+                        time: postData.time,
+                        descendants: postData.descendants,
                     } as Post;   
                 } catch (error) {
                     console.error(`Error fetching post ${id}:`, error);
@@ -41,7 +48,7 @@ export const fetchPosts = async (type: "top" | "new"): Promise<Post[]> => {
         return posts.filter((post): post is Post => post !== null);
     } catch (error) {
         console.error("Error fetching posts:", error);
-        return [];
+        throw error;
     }
 }
 
