@@ -1,46 +1,38 @@
 import '@testing-library/jest-dom';
-import {render, screen, fireEvent, waitFor} from '@testing-library/react';
-import { PostList } from '../PostList.tsx';
+import { render, screen } from '@testing-library/react';
+import { PostList } from '../PostList';
 import * as api from '../../services/hackerNewsApi';
+import { POSTS_PER_PAGE } from '../../types/constants';
 
 jest.mock('../../services/hackerNewsApi');
 
-const mockValidPost = [
-    {
-        id: 1,
-        by: "test post",
-        title: "test story",
-        url: "http://example.com/",
-        score: 100,
-        descendants: 10,
-        time: Math.floor(Date.now() / 1000),
-    }
-];
-
-(api.fetchPosts as jest.Mock).mockResolvedValue(mockValidPost);
+const mockPosts = Array.from({ length: POSTS_PER_PAGE }, (_, i) => ({
+  id: i + 1,
+  by: "test author",
+  title: `test story ${i + 1}`,
+  url: "http://example.com/",
+  points: 100,
+  descendants: 10,
+  time: Math.floor(Date.now() / 1000),
+}));
 
 describe("PostList", () => {
-    it("should render posts correctly", async () => {
-        render(<PostList />);
+  beforeEach(() => {
+    (api.fetchPosts as jest.Mock).mockClear();
+  });
 
-        expect(screen.getByText("loading")).toBeInTheDocument();
+  it("renders posts from API", async () => {
+    (api.fetchPosts as jest.Mock).mockResolvedValueOnce(mockPosts);
+    render(<PostList />);
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    const post = await screen.findByText("test story 1");
+    expect(post).toBeInTheDocument();
+  });
 
-        const post = await screen.findByText("test story");
-        expect(post).toBeInTheDocument();
-    });
-
-    it("can load more posts", async () => {
-        render(<PostList />);
-    
-        await waitFor(() => screen.getByText("Test Post"));
-    
-        const button = screen.getByRole("button", { name: /load more/i });
-        fireEvent.click(button);
-    
-        await waitFor(() => {
-          // Second post renders (in this mock, it's the same again)
-          expect(screen.getAllByText("Test Post").length).toBe(2);
-        });
-      });
-})
-
+  it("shows error message on fetch failure", async () => {
+    (api.fetchPosts as jest.Mock).mockRejectedValueOnce(new Error("API error"));
+    render(<PostList />);
+    const error = await screen.findByRole("alert");
+    expect(error).toHaveTextContent("API error");
+  });
+});

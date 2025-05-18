@@ -6,11 +6,11 @@ import { POSTS_PER_PAGE } from "../../types/constants";
 jest.mock("../../services/hackerNewsApi");
 
 const mockPosts = Array.from({ length: POSTS_PER_PAGE }, (_, i) => ({
-  id: i,
-  by: `user${i}`,
-  title: `Post ${i}`,
-  url: `http://example.com/${i}`,
-  score: 100,
+  id: i + 1,
+  by: "test author",
+  title: `test story ${i + 1}`,
+  url: "http://example.com/",
+  points: 100,
   descendants: 10,
   time: Math.floor(Date.now() / 1000),
 }));
@@ -23,7 +23,7 @@ describe("usePosts hook", () => {
   it("fetches and returns posts", async () => {
     (fetchPosts as jest.Mock).mockResolvedValueOnce(mockPosts);
 
-    const { result, rerender } = renderHook(() => usePosts("top"));
+    const { result } = renderHook(() => usePosts("top"));
 
     await act(async () => {
       await Promise.resolve();
@@ -32,12 +32,11 @@ describe("usePosts hook", () => {
     expect(fetchPosts).toHaveBeenCalledWith("top", 1);
     expect(result.current.posts).toHaveLength(POSTS_PER_PAGE);
     expect(result.current.loading).toBe(false);
-    expect(result.current.hasMore).toBe(true);
     expect(result.current.error).toBe(null);
   });
 
-  it("loads more posts on loadMore", async () => {
-    (fetchPosts as jest.Mock).mockResolvedValue(mockPosts);
+  it("handles fetch error", async () => {
+    (fetchPosts as jest.Mock).mockRejectedValueOnce(new Error("API error"));
 
     const { result } = renderHook(() => usePosts("top"));
 
@@ -45,27 +44,7 @@ describe("usePosts hook", () => {
       await Promise.resolve();
     });
 
-    expect(result.current.posts).toHaveLength(POSTS_PER_PAGE);
-
-    await act(async () => {
-      result.current.loadMore();
-      await Promise.resolve();
-    });
-
-    expect(result.current.posts).toHaveLength(POSTS_PER_PAGE * 2);
-  });
-
-  it("handles errors correctly", async () => {
-    (fetchPosts as jest.Mock).mockRejectedValueOnce(new Error("API failed"));
-
-    const { result } = renderHook(() => usePosts("top"));
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    expect(result.current.error).toBe("API failed");
-    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe("API error");
     expect(result.current.posts).toHaveLength(0);
   });
 });

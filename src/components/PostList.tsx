@@ -13,7 +13,9 @@ export const PostList = () => {
             <Tabs activeTab={activeTab} onChange={setActiveTab} />
 
             {error && (
-                <div className="bg-red-500 text-white p-4 mb-4 rounded">
+                <div 
+                role="alert"
+                className="bg-red-500 text-white p-4 mb-4 rounded">
                     {error}
                 </div>
             )}
