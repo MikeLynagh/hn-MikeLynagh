@@ -1,4 +1,5 @@
 import type { Post } from "../types/post";
+import { formatTimeAgo } from "../utils/formatTime";
 
 export const PostItem = ({ post }: { post: Post }) => {
     return (
@@ -21,7 +22,7 @@ export const PostItem = ({ post }: { post: Post }) => {
                 <span className="text-gray-500"> • </span>
                 <span>{post.descendants} comments</span>
                 <span className="text-gray-500"> • </span>
-                <span>{post.time} ago</span>
+                <span>{formatTimeAgo(post.time)}</span>
             </div>
             
         </article>
