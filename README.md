@@ -2,6 +2,10 @@
 
 A modern, accessible clone of Hacker News built with React, TypeScript, and Tailwind CSS.
 
+## Live Demo 
+
+Check out the live version hosted on Vercel: [Hacker News Clone](https://hn-mike-lynagh.vercel.app/)
+
 ## Features
 
 - 📰 View top and new stories from Hacker News
