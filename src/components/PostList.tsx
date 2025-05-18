@@ -21,7 +21,11 @@ export const PostList = () => {
             {loading && posts.length === 0? (
                 <p>Loading...</p>
             ): (
-                <div className="space-y-4">
+                <div 
+                id="posts-list"
+                role="feed"
+                aria-busy={loading}
+                className="space-y-4">
                     {posts.map((post) => (
                         <PostItem key={post.id} post={post} />
                     ))}
@@ -32,6 +36,8 @@ export const PostList = () => {
                                 e.preventDefault();
                                 loadMore();
                             }}
+                            aria-controls="posts-list"
+                            aria-expanded={hasMore}
                             disabled={loading}
                             className=" bg-gray-800 text-white hover:text-yellow-600 p-4 rounded shadow hover:bg-gray-700 disabled:opacity-50"
                         >
