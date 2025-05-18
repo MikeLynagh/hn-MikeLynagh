@@ -8,10 +8,12 @@ export const PostItem = ({ post }: { post: Post }) => {
                 {post.title}
             </a>
             <div className="text-sm font-normal text-gray-400">
+                <span>By {post.by}</span>
+                <span className="text-gray-500"> • </span>
                 <span>{post.points} points</span>
-                <span className="text-gray-700">•</span>
-                <span>{post.comments} comments</span>
-                <span className="text-gray-700">•</span>
+                <span className="text-gray-500"> • </span>
+                <span>{post.descendants} comments</span>
+                <span className="text-gray-500"> • </span>
                 <span>{post.time} ago</span>
             </div>
             
