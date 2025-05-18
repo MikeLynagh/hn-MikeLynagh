@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchPosts } from "../services/hackerNewsApi";
 import type { Post } from "../types/post";
+import { POSTS_PER_PAGE } from "../types/constants";
 
 export const usePosts = (type: "top" | "new" = "top") => {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -9,16 +10,20 @@ export const usePosts = (type: "top" | "new" = "top") => {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    //reset everything when the type changes 
+    useEffect(() => {
+        setPage(1);
+        setPosts([]);
+        setHasMore(true);
+        setError(null);
+    }, [type]);
+
 
     useEffect(() => {
         const loadPosts = async () => {
             try {
                 setLoading(true);
                 setError(null);
-
-                if (page === 1) {
-                    setPosts([]);
-                }
 
                 const data = await fetchPosts(type, page);
 
@@ -27,7 +32,7 @@ export const usePosts = (type: "top" | "new" = "top") => {
                 } else {
                     setPosts(prev => [...prev, ...data]);
                 }
-                setHasMore(data.length === 30);
+                setHasMore(data.length === POSTS_PER_PAGE);
             } catch (error) {
                 setError(error instanceof Error ? error.message: "An error occurred")
             } finally {
@@ -43,17 +48,12 @@ export const usePosts = (type: "top" | "new" = "top") => {
         }
     };
 
-    const resetPage = () => {
-        setPage(1);
-        setHasMore(true);
-    }
 
     return {
         posts, 
         loading, 
         error,
         hasMore,
-        loadMore,
-        resetPage
+        loadMore
     };
 };

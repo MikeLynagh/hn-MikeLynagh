@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PostItem } from "./PostItem";
 import { Tabs } from "./Tabs";
 import { usePosts } from "../hooks/usePosts";
 
 export const PostList = () => {
     const [activeTab, setActiveTab] = useState<"top" | "new">("top");
-    const { posts, loading, error, hasMore, loadMore, resetPage } = usePosts(activeTab);
+    const { posts, loading, error, hasMore, loadMore } = usePosts(activeTab);
 
-    useEffect(() => {
-        resetPage();
-    }, [activeTab, resetPage]);
 
     return(
         <div className="max-w-2xl mx-auto p-4">
@@ -31,7 +28,10 @@ export const PostList = () => {
                     {
                         hasMore && (
                             <button
-                            onClick={loadMore}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                loadMore();
+                            }}
                             disabled={loading}
                             className=" bg-gray-800 text-white hover:text-yellow-600 p-4 rounded shadow hover:bg-gray-700 disabled:opacity-50"
                         >

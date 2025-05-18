@@ -1,16 +1,16 @@
 import type { Post } from "../types/post";
+import { ENDPOINTS, POSTS_PER_PAGE, HTTP_STATUS } from "../types/constants";
 
-const POSTS_PER_PAGE = 30;
 export const fetchPosts = async (
     type: "top" | "new",
     page: number = 1,
 ): Promise<Post[]> => {
 
     try {
-        const response = await fetch(`https://hacker-news.firebaseio.com/v0/${type}stories.json`);
-        console.log("response status:", response.status);
+        const endpoint = type === "top" ? ENDPOINTS.TOP_STORIES : ENDPOINTS.NEW_STORIES;
+        const response = await fetch(endpoint);
 
-        if (!response.ok) {
+        if (response.status !== HTTP_STATUS.OK) {
             throw new Error(`HTTP error. status: ${response.status}`);
         }
 
@@ -22,7 +22,7 @@ export const fetchPosts = async (
         const posts = await Promise.all(
             paginatedIds.map(async (id: number) => {
                 try {
-                    const postResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+                    const postResponse = await fetch(ENDPOINTS.STORY(id));
                     if(!postResponse.ok) {
                         throw new Error(`HTTP error! status: ${postResponse.status}`);
                     }
