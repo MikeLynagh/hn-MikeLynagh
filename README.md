@@ -11,7 +11,6 @@ Check out the live version hosted on Vercel: [Hacker News Clone](https://hn-mike
 - 📰 View top and new stories from Hacker News
 - ♿ Fully accessible UI components
 - 📱 Responsive design
-- 🔄 Infinite scroll pagination
 - ⚡ Fast and efficient data fetching
 - 🎨 Modern UI with Tailwind CSS
 
@@ -21,7 +20,6 @@ Check out the live version hosted on Vercel: [Hacker News Clone](https://hn-mike
 - TypeScript
 - Tailwind CSS
 - Vite
-- React Query (for data fetching)
 - Jest & Testing Library (for testing)
 
 ## Getting Started
