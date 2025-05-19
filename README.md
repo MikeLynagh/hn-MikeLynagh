@@ -22,6 +22,16 @@ Check out the live version hosted on Vercel: [Hacker News Clone](https://hn-mike
 - Vite
 - Jest & Testing Library (for testing)
 
+## Assumptions 
+- The Hacker News API is available and returns data in the expected format.
+- No authentication or user accounts are required.
+- The application is read-only (viewing stories only).
+- All required data fields are present in API responses.
+- Basic error handling is implemented; not all edge cases are covered.
+- The UI is designed to be accessible and responsive, but full WCAG compliance is not guaranteed.
+- Only core components are covered by tests due to time constraints.
+- The app is intended for modern browsers.
+
 ## Getting Started
 
 ### Prerequisites
